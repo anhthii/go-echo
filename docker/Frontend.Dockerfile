@@ -29,7 +29,7 @@ RUN mkdir -p /run/nginx && \
 
 COPY --from=builder /usr/app/Echo/public /usr/share/nginx/html
 
-COPY nginx.conf /etc/nginx/conf.d/
+COPY ./docker/nginx.conf /etc/nginx/conf.d/
 
 EXPOSE 8080
 

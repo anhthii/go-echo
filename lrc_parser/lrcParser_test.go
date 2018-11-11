@@ -1,10 +1,9 @@
-package lrc_parser_test
+package lrc_parser
 
 import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/anhthii/go-echo/lrc_parser"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,8 +16,9 @@ func TestParse(t *testing.T) {
 
 	data := string(bytes)
 
-	result := lrc_parser.Parse(data)
-	lyrics := result["scripts"].([]lrc_parser.Lyric)
+	result := Parse(data)
+	lyrics := result["scripts"].([]Lyric)
+
 	assert.Equal(t, result["length"].(string), "03:55", "length should be equal")
 	assert.Equal(t, result["ar"].(string), "Maroon 5, Cardi B", "artist should be the same")
 	assert.Equal(t, result["al"].(string), "Girls Like You (Single)", "album should be the same")

@@ -3,7 +3,7 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: Frontend.Dockerfile
+      dockerfile: ./docker/Frontend.Dockerfile
     ports:
       - "8080:8080"
     links:
@@ -12,6 +12,6 @@ services:
   server:
     build:
       context: .
-      dockerfile: Server.Dockerfile
+      dockerfile: ./docker/Server.Dockerfile
     ports:
       - "3000:3000"

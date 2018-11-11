@@ -1,11 +1,9 @@
 FROM golang:alpine as builder
 
+RUN apk update && apk add git && apk add ca-certificates
+
 WORKDIR /go/src/github.com/anhthii/go-echo
 
-RUN apk update && \
-    apk upgrade --update-cache --available
-
-RUN apk add --no-cache git
 
 RUN go get github.com/golang/dep/cmd/dep
 
@@ -21,7 +19,7 @@ RUN go build -o webserver main.go
 
 FROM alpine:latest
 
-ADD ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 WORKDIR /usr/app/go-echo
 

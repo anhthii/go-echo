@@ -55,7 +55,7 @@ func convertTime(s string) float64 {
 func Parse(data string) map[string]interface{} {
 	result := make(map[string]interface{})
 	var lines []string
-	lines = strings.Split(data, "\r\n")
+	lines = strings.Split(data, "\n")
 	_startingTimeRx := `\[(\d*\:\d*\.?\d*)\]` // i.g [00:10.55]
 	startingTimeRx := regexp.MustCompile(_startingTimeRx)
 	// similar to starting time regex
