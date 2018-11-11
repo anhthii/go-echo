@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/anhthii/zing.mp3/scraper"
+	"github.com/anhthii/go-echo/scraper"
 	"github.com/gin-gonic/gin"
 )
 

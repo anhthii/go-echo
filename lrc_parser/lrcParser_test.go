@@ -4,7 +4,7 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/anhthii/zing.mp3/lrc_parser"
+	"github.com/anhthii/go-echo/lrc_parser"
 	"github.com/stretchr/testify/assert"
 )
 

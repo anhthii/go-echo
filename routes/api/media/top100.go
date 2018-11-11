@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/anhthii/zing.mp3/utils"
+	"github.com/anhthii/go-echo/utils"
 	"github.com/gin-gonic/gin"
 )
 

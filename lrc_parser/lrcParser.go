@@ -51,7 +51,7 @@ func convertTime(s string) float64 {
 	return float64(int(seconds*100)) / 100
 }
 
-// Parse lrc data into json format
+// Parse lrc data into map format
 func Parse(data string) map[string]interface{} {
 	result := make(map[string]interface{})
 	var lines []string

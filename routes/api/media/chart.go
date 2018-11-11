@@ -3,10 +3,9 @@ package media
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 
-	"github.com/anhthii/zing.mp3/scraper"
+	"github.com/anhthii/go-echo/scraper"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,7 +26,7 @@ func GetChart(c *gin.Context) {
 	}
 	response, err := http.Get(URL)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	defer response.Body.Close()
 	var result map[string]interface{}

@@ -3,12 +3,14 @@ package main
 import (
 	"net/http"
 
-	"github.com/anhthii/zing.mp3/routes/api/media"
+	"github.com/anhthii/go-echo/routes/api/media"
+	"github.com/anhthii/go-echo/routes/api/user"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	router := gin.Default()
+	// router.Use(static.Serve("/", static.LocalFile("./public", true)))
 
 	api := router.Group("/api")
 	{
@@ -24,6 +26,11 @@ func main() {
 			mediaRoutes.GET("/suggested-song", media.GetSuggestedSongs)
 			mediaRoutes.GET("/album_playlist", media.GetAlbumPlaylist)
 			mediaRoutes.GET("/top100/:typeID", media.GetTop100)
+		}
+
+		userRoutes := api.Group("/user")
+		{
+			userRoutes.POST("/signup", user.CreateNewUser)
 		}
 
 		playlist := api.Group("/playlist")

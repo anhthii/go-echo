@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/anhthii/zing.mp3/lrc_parser"
-	"github.com/anhthii/zing.mp3/utils"
+	"github.com/anhthii/go-echo/lrc_parser"
+	"github.com/anhthii/go-echo/utils"
 	"github.com/gin-gonic/gin"
 )
 

@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/anhthii/zing.mp3/utils"
+	"github.com/anhthii/go-echo/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,7 +15,7 @@ func GetSuggestedSongs(c *gin.Context) {
 	songID := c.Query("songId")
 	artistID := c.Query("artistId")
 
-	URL := fmt.Sprintf(`https://mp3.zing./xhr/recommend?target=%%23block-recommend&count=20&start=0&artistid=%s&type=audio&id=%s`, artistID, songID)
+	URL := fmt.Sprintf(`https://mp3.zing.vn/xhr/recommend?target=%%23block-recommend&count=20&start=0&artistid=%s&type=audio&id=%s`, artistID, songID)
 	response, err := http.Get(URL)
 
 	if err != nil {
