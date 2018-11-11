@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/anhthii/go-echo/lrc_parser"
 	"github.com/anhthii/go-echo/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -23,19 +22,6 @@ func GetSong(c *gin.Context) {
 	}
 
 	key := r.FindStringSubmatch(s)[0]
-	resourceURL := fmt.Sprintf("https://mp3.zing.vn/xhr/media/get-source?type=audio&%s", key)
-	result, err := utils.GetMapDataFromHTTPGet(resourceURL)
-	if err != nil {
-		utils.InternalErrorJSON(c, err)
-	}
-
-	data := result["data"].(map[string]interface{})
-	lrcFileURL := data["lyric"].(string)
-	lrcString, err := utils.GetStringDataFromHTTPGet(lrcFileURL)
-	if err != nil {
-		utils.InternalErrorJSON(c, err)
-	}
-
-	data["lyric"] = lrc_parser.Parse(lrcString)["scripts"].([]lrc_parser.Lyric)
-	c.JSON(http.StatusOK, data)
+	songResourceEndpoint := fmt.Sprintf("media/get-source?type=audio&%s", key)
+	c.JSON(http.StatusOK, songResourceEndpoint)
 }
