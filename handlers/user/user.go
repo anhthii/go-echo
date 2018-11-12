@@ -5,16 +5,17 @@ import (
 	"net/http"
 	"strings"
 
+	UserModel "github.com/anhthii/go-echo/db/models"
 	"github.com/gin-gonic/gin"
 	validator "gopkg.in/go-playground/validator.v8"
 )
 
-type User struct {
-	Username string `json:"username" binding:"required,alphanum,max=6,min=3"`
+type UserBody struct {
+	Username string `json:"username" binding:"required,alphanum,max=16,min=3"`
 	Password string `json:"password" binding:"required,min=6"`
 }
 
-type ValidateResponse struct {
+type ErrorResponse struct {
 	Error  bool              `json:"error"` // define whether validate function return any errors or not
 	Errors map[string]string `json:"errors"`
 }
@@ -33,28 +34,53 @@ func validationErrorToText(e *validator.FieldError) string {
 	return fmt.Sprintf("%s is not valid", e.Field)
 }
 
-func validate(errors validator.ValidationErrors) ValidateResponse {
+func validate(errors validator.ValidationErrors) ErrorResponse {
 	errorMap := make(map[string]string)
 	haveError := false
 	for _, err := range errors {
 		errorMap[strings.ToLower(err.Field)] = validationErrorToText(err)
 		haveError = true
 	}
-	return ValidateResponse{Error: haveError, Errors: errorMap}
+
+	return ErrorResponse{Error: haveError, Errors: errorMap}
 }
 
 // CreateNewUser check if data meets all the requirements, then create a new user
 func CreateNewUser(c *gin.Context) {
-	var json User
+	var json UserBody
 	if err := c.ShouldBindJSON(&json); err != nil {
 		validateResponse := validate(err.(validator.ValidationErrors))
 		c.JSON(http.StatusBadRequest, validateResponse)
 		return
 	}
-	if json.Username != "manu" || json.Password != "123456" {
-		c.JSON(http.StatusUnauthorized, gin.H{"status": "unauthorized"})
+
+	httpStatusCode, errorResponse := UserModel.ValidateUsername(json.Username)
+	if errorResponse != nil {
+		c.JSON(httpStatusCode, ErrorResponse{Error: true, Errors: errorResponse})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"status": "you are logged in"})
+	httpStatusCode, errorResponse, dataResponse := UserModel.CreateNewUser(json.Username, json.Password)
+	if errorResponse != nil {
+		c.JSON(httpStatusCode, ErrorResponse{Error: true, Errors: errorResponse})
+		return
+	}
+
+	c.JSON(http.StatusOK, dataResponse)
+}
+
+func Login(c *gin.Context) {
+	var json UserBody
+	if err := c.ShouldBindJSON(&json); err != nil {
+		validateResponse := validate(err.(validator.ValidationErrors))
+		c.JSON(http.StatusBadRequest, validateResponse)
+		return
+	}
+	httpStatusCode, errorResponse, dataResponse := UserModel.Login(json.Username, json.Password)
+	if errorResponse != nil {
+		c.JSON(httpStatusCode, ErrorResponse{Error: true, Errors: errorResponse})
+		return
+	}
+
+	c.JSON(http.StatusOK, dataResponse)
 }

@@ -14,7 +14,7 @@ RUN npm install
 RUN cd app/constant && \
     sed -i 's/localhost/server/g' endpoint_constant.js
 
-RUN ./node_modules/.bin/webpack --env=prod --progress --profile --colors
+RUN npm run build
 
 FROM alpine:latest
 

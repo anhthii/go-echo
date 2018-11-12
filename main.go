@@ -3,14 +3,20 @@ package main
 import (
 	"net/http"
 
-	"github.com/anhthii/go-echo/routes/api/media"
-	"github.com/anhthii/go-echo/routes/api/user"
+	"github.com/anhthii/go-echo/db"
+	"github.com/anhthii/go-echo/db/models"
+
+	"github.com/anhthii/go-echo/handlers/media"
+	userHandlers "github.com/anhthii/go-echo/handlers/user"
 	"github.com/gin-gonic/gin"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 func main() {
 	router := gin.Default()
-	// router.Use(static.Serve("/", static.LocalFile("./public", true)))
+	db.Init()
+	db.Tables(&models.User{})
+	defer db.Close()
 
 	api := router.Group("/api")
 	{
@@ -28,10 +34,10 @@ func main() {
 			mediaRoutes.GET("/top100/:typeID", media.GetTop100)
 		}
 
-		userRoutes := api.Group("/user")
-		{
-			userRoutes.POST("/signup", user.CreateNewUser)
-		}
+		// userRoutes := api.Group("/user")
+		// {
+		// 	userRoutes.POST("/signup", user.CreateNewUser)
+		// }
 
 		playlist := api.Group("/playlist")
 		{
@@ -43,14 +49,11 @@ func main() {
 			})
 		}
 
-		// user := api.Group("/user")
-		// {
-		// 	user.GET("/user1", func(c *gin.Context) {
-		// 		c.JSON(http.StatusOK, gin.H{
-		// 			"message": "user",
-		// 		})
-		// 	})
-		// }
+		user := api.Group("/user")
+		{
+			user.POST("/signup", userHandlers.CreateNewUser)
+			user.POST("/login", userHandlers.Login)
+		}
 	}
 
 	// router.NoRoute(func(c *gin.Context) {
