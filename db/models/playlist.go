@@ -94,7 +94,7 @@ func CreatePlaylist(username, playlistTitle string) (data map[string]interface{}
 
 	// if user doesn't have a playlist with this title, create a new one
 	playlist := &Playlist{}
-	if exist := checkRecordExistence(playlist, "user_refer = ? AND title = ", username, playlistTitle); !exist {
+	if exist := checkRecordExistence(playlist, "user_refer = ? AND title = ? ", username, playlistTitle); !exist {
 		newPlaylist := &Playlist{Title: playlistTitle, UserRefer: username}
 		db.GetDB().Create(newPlaylist)
 		return map[string]interface{}{

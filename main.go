@@ -7,7 +7,7 @@ import (
 	"github.com/anhthii/go-echo/handlers/media"
 	playlistHandlers "github.com/anhthii/go-echo/handlers/playlist"
 	userHandlers "github.com/anhthii/go-echo/handlers/user"
-
+	authMiddlewares "github.com/anhthii/go-echo/middlewares"
 	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
@@ -41,21 +41,21 @@ func main() {
 
 		}
 
-		playlistRoutes := api.Group("/playlist")
+		playlistRoutes := api.Group("/playlist", authMiddlewares.TokenAuthMiddleware())
 		{
 			// get all playlists of a user
-			playlistRoutes.GET("/:username", playlistHandlers.GetPlaylists)
+			playlistRoutes.GET("/:username", authMiddlewares.IsValidUser, playlistHandlers.GetPlaylists)
 
 			// get a specific playlist with title
 			// not implemented yet
 			// playlistRoutes.GET("/:username/:title", getPlaylist)
-			playlistRoutes.POST("/:username", playlistHandlers.CreatePlaylist)
+			playlistRoutes.POST("/:username", authMiddlewares.IsValidUser, playlistHandlers.CreatePlaylist)
 
 			// // delete a playlist
-			playlistRoutes.DELETE("/:username/:playlistTitle", playlistHandlers.DeletePlaylist)
+			playlistRoutes.DELETE("/:username/:playlistTitle", authMiddlewares.IsValidUser, playlistHandlers.DeletePlaylist)
 
 			// add a song to a playlist
-			playlistRoutes.PUT("/:username/:playlistTitle", playlistHandlers.AddSongToPlaylist)
+			playlistRoutes.PUT("/:username/:playlistTitle", authMiddlewares.IsValidUser, playlistHandlers.AddSongToPlaylist)
 
 			// delete a song from a playlist
 			// playlistRoutes.DELETE("/:username/:playlistTitle/:songId", deleteSongFromPlaylist)
