@@ -32,6 +32,7 @@ func main() {
 			mediaRoutes.GET("/suggested-song", media.GetSuggestedSongs)
 			mediaRoutes.GET("/album_playlist", media.GetAlbumPlaylist)
 			mediaRoutes.GET("/top100/:typeID", media.GetTop100)
+			mediaRoutes.GET("/search", media.SearchSong)
 		}
 
 		userRoutes := api.Group("/user")
@@ -62,6 +63,8 @@ func main() {
 		}
 
 	}
+
+	// router.GET("/download/song/:songTitle/:id", handlers.DownloadSong)
 
 	router.Run(":3000")
 }
