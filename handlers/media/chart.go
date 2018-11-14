@@ -1,11 +1,10 @@
 package media
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/anhthii/go-echo/scraper"
+	"github.com/anhthii/go-echo/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,17 +23,26 @@ func GetChart(c *gin.Context) {
 		coverIndex = 0
 		URL = "https://beta.mp3.zing.vn/api/chart/get-chart?id=IWZ9Z08I&week=null&year=null&ctime=1541643715&sig=f37d92d66d506da34039c4685598ba9f1c6cdda88c91279de81307b5ea786ff43491a45f56bbb35efb3fd4269adc76eca4abde4d806ed8392fbab704e4486dd0&api_key=38e8643fb0dc04e8d65b99994d3dafff"
 	}
-	response, err := http.Get(URL)
-	if err != nil {
-		panic(err)
-	}
-	defer response.Body.Close()
+
+	resourceChan := make(chan map[string]interface{})
+	imgSrcChan := make(chan string)
+	go func() {
+		result, err := utils.GetMapDataFromHTTPGet(URL)
+		if err != nil {
+			utils.InternalErrorJSON(c, err)
+		}
+		resourceChan <- result
+	}()
+
+	go func() {
+		img := scraper.Init().Scrape("https://mp3.zing.vn").Doc.Find(".chart-song .zthumb .fn-thumb").Eq(coverIndex)
+		src, _ := img.Attr("src")
+		imgSrcChan <- src
+	}()
+
 	var result map[string]interface{}
-	bytes, _ := ioutil.ReadAll(response.Body)
-	json.Unmarshal(bytes, &result)
-	img := scraper.Init().Scrape("https://mp3.zing.vn").Doc.Find(".chart-song .zthumb .fn-thumb").Eq(coverIndex)
-	src, _ := img.Attr("src")
-	result["data"].(map[string]interface{})["cover"] = src
+	result = <-resourceChan
+	result["data"].(map[string]interface{})["cover"] = <-imgSrcChan
 	result["data"].(map[string]interface{})["items"] = result["data"].(map[string]interface{})["items"].([]interface{})[:20]
 	c.JSON(http.StatusOK, result)
 }
