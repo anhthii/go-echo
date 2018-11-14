@@ -19,11 +19,11 @@ RUN go build -o webserver main.go
 
 FROM alpine:latest
 
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY ./docker/ca-certificates.crt /etc/ssl/certs/
 
 WORKDIR /usr/app/go-echo
 
-COPY --from=builder /go/src/github.com/anhthii/go-echo/webserver .
+COPY --from=builder /go/src/github.com/anhthii/go-echo/webserver /go/src/github.com/anhthii/go-echo/.env ./
 
 EXPOSE 3000
 

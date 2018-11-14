@@ -11,16 +11,16 @@ import (
 )
 
 type Token struct {
-	UserId uint
+	Username string
 	jwt.StandardClaims
 }
 
 // User store user's information
 type User struct {
-	gorm.Model
-	Username     string
+	Username     string `gorm:"PRIMARY_KEY"`
 	Password     string
 	Access_token string
+	Playlists    []Playlist `gorm:"foreignkey:UserRefer"`
 }
 
 type errors map[string]string
@@ -43,12 +43,8 @@ func CreateNewUser(username, password string) (httpStatusCode int, errorResponse
 
 	db.GetDB().Create(user)
 
-	if user.ID <= 0 {
-		return 500, errors{"database": "Failed to create account, connection error."}, nil
-	}
-
 	// create new JWT token for the newly registered account
-	tk := &Token{UserId: user.ID}
+	tk := &Token{Username: user.Username}
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
 	tokenString, _ := token.SignedString([]byte(os.Getenv("TOKEN_SECRET")))
 

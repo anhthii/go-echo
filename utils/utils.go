@@ -2,10 +2,13 @@ package utils
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
+	validator "gopkg.in/go-playground/validator.v8"
 )
 
 func httpGet(URL string) ([]byte, error) {
@@ -45,4 +48,34 @@ func GetStringDataFromHTTPGet(URL string) (string, error) {
 func InternalErrorJSON(context *gin.Context, err error) {
 	_error := gin.H{"errors": err}
 	context.JSON(500, _error)
+}
+
+type ErrorResponse struct {
+	Error  bool              `json:"error"` // define whether validate function return any errors or not
+	Errors map[string]string `json:"errors"`
+}
+
+func validationErrorToText(e *validator.FieldError) string {
+	switch e.Tag {
+	case "required":
+		return fmt.Sprintf("%s is is required", e.Field)
+	case "min":
+		return fmt.Sprintf("%s must be at least %s characters", e.Field, e.Param)
+	case "max":
+		return fmt.Sprintf("%s must not be longer than %s characters", e.Field, e.Param)
+	case "alphanum":
+		return fmt.Sprintf("%s must be alphanumeric", e.Field)
+	}
+	return fmt.Sprintf("%s is not valid", e.Field)
+}
+
+func Validate(errors validator.ValidationErrors) ErrorResponse {
+	errorMap := make(map[string]string)
+	haveError := false
+	for _, err := range errors {
+		errorMap[strings.ToLower(err.Field)] = validationErrorToText(err)
+		haveError = true
+	}
+
+	return ErrorResponse{Error: haveError, Errors: errorMap}
 }

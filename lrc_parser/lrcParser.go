@@ -12,46 +12,7 @@ type Lyric struct {
 	End    float64 `json:"end"`
 }
 
-func filter(ss []string, test func(string) bool) (ret []string) {
-	for _, s := range ss {
-		if test(s) {
-			ret = append(ret, s)
-		}
-	}
-	return
-}
-
-// ExtractMetadata from data under lrc format
-func ExtractMetadata(lines []string, result map[string]interface{}) {
-	for _, line := range lines {
-		last := len(line) - 1
-		infos := strings.Split(line[1:last], ": ")
-		tag := infos[0]
-		value := infos[1]
-		result[tag] = value
-	}
-}
-
-// convert string to seconds
-func convertTime(s string) float64 {
-	parts := strings.Split(s, ":")
-	minutes, err := strconv.ParseInt(parts[0], 10, 64)
-	if err != nil {
-		panic(err)
-	}
-	seconds, err := strconv.ParseFloat(parts[1], 64)
-	if err != nil {
-		panic(err)
-	}
-
-	if minutes > 0 {
-		seconds = float64(minutes)*60 + seconds
-
-	}
-	return float64(int(seconds*100)) / 100
-}
-
-// Parse lrc data into map format
+// Parse lrc data into JSON format
 func Parse(data string) map[string]interface{} {
 	result := make(map[string]interface{})
 	var lines []string
@@ -93,4 +54,43 @@ func Parse(data string) map[string]interface{} {
 	}
 
 	return result
+}
+
+func filter(ss []string, test func(string) bool) (ret []string) {
+	for _, s := range ss {
+		if test(s) {
+			ret = append(ret, s)
+		}
+	}
+	return
+}
+
+// ExtractMetadata from data under lrc format
+func ExtractMetadata(lines []string, result map[string]interface{}) {
+	for _, line := range lines {
+		last := len(line) - 1
+		infos := strings.Split(line[1:last], ": ")
+		tag := infos[0]
+		value := infos[1]
+		result[tag] = value
+	}
+}
+
+// convert string to seconds
+func convertTime(s string) float64 {
+	parts := strings.Split(s, ":")
+	minutes, err := strconv.ParseInt(parts[0], 10, 64)
+	if err != nil {
+		panic(err)
+	}
+	seconds, err := strconv.ParseFloat(parts[1], 64)
+	if err != nil {
+		panic(err)
+	}
+
+	if minutes > 0 {
+		seconds = float64(minutes)*60 + seconds
+
+	}
+	return float64(int(seconds*100)) / 100
 }
