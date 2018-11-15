@@ -1,0 +1,60 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Top100song",
+    "properties": {
+        "data": {
+            "required": ["items"],
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "minItems": 20,
+                    "items": { "$ref": "#/definitions/top100SongItem" }
+                }   
+            }
+        }
+    },
+    "definitions": {
+        "top100SongItem": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "title of the song",
+              "example": "What do you mean"
+            },
+            "thumbnail": {
+              "type": "string",
+              "example": "https://photo-resize-zmp3.zadn.vn/w94h94_jpeg/covers/7/e/7e23016f0f01222017563942f990a934_1478858370.jpg"
+            },
+            "order": {
+                "type": ["integer", "string"],
+                "example": "01"
+            },
+            "id": {
+                "type": "string",
+                "example": "ZW787DUI"
+            },
+            "artists": {
+                "type": "array",
+                "items": { "$ref": "#/definitions/songArtist" },
+                "examples":  [ { "link": "/nghe-si/Olly-Murs", "name": "Olly Murs"}] 
+            }
+          },
+          "required": [ "name", "thumbnail", "order", "id", "artists"]
+        },
+        "songArtist": {
+            "type": "object",
+            "required": [ "link", "name"],
+            "properties": {
+                "link": {
+                    "type": "string",
+                    "example": "/nghe-si/Olly-Murs"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "required": ["data"]
+}

@@ -1,0 +1,67 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "DefaultAlbum",
+    "properties": {
+        "origins": {
+            "type": "array",
+            "minItems": 4,
+            "items": {
+                "require": ["albums", "id", "title"],
+                "type": "object",
+                "properties": {
+                    "albums": {
+                        "type": "array",
+                        "minItems": 8,
+                        "items": { "$ref": "#/definitions/album" }
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "US-UK"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "album": {
+          "type": "object",
+          "required": [ "alias", "artists", "cover", "id", "title"],
+          "properties": {
+            "alias": {
+              "type": "string",
+              "example": "Thay-La-Yeu-Thuong-Single-OnlyC"
+            },
+            "id": {
+                "type": "string"
+            },
+            "cover": {
+                "type": "string"
+            },
+            "title": {
+                "type": "string"
+            },
+            "artists": {
+                "type": "array",
+                "items": { "$ref": "#/definitions/songArtist" },
+                "examples":  [{"alias": "A-Great-Big-World", "name": "A Great Big World"} ]
+            }
+          }
+        },
+        "songArtist": {
+            "type": "object",
+            "required": [ "alias", "name"],
+            "properties": {
+                "alias": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "required": ["origins", "result"]
+}
