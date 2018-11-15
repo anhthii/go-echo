@@ -21,7 +21,8 @@ FROM alpine:latest
 RUN apk update && \
     apk upgrade --update-cache --available
 
-RUN apk add nginx
+RUN apk add --no-cache bash nginx 
+
 
 RUN mkdir -p /run/nginx && \
     mkdir /usr/share/nginx && \
@@ -31,9 +32,13 @@ COPY --from=builder /usr/app/Echo/public /usr/share/nginx/html
 
 COPY ./docker/nginx.conf /etc/nginx/conf.d/
 
+COPY ./docker/wait-for-it.sh /wait-for-it.sh
+
+RUN chmod +x /wait-for-it.sh
+
 EXPOSE 8080
 
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+CMD ["nginx", "-g", "daemon off;"]
 
 
 

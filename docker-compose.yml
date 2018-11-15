@@ -8,15 +8,15 @@ services:
       - "8080:8080"
     links:
       - server
+    command: ["/wait-for-it.sh", "server:3000", "--", "nginx", "-g", "daemon off;"]
 
   server:
     build:
       context: .
       dockerfile: ./docker/Server.Dockerfile
-    ports:
-      - "3000:3000"
     links:
       - postgres
+    command: ["/wait-for-it.sh", "postgres:5432", "--", "./webserver"]
 
   postgres:
     image: postgres:alpine
@@ -25,5 +25,3 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_HOST: ${POSTGRES_HOST}
-    ports:
-      - "5432:5432"
