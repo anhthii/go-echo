@@ -3,7 +3,7 @@ package media
 import (
 	"net/http"
 
-	"github.com/anhthii/go-echo/scraper"
+	"github.com/anhthii/go-echo/libs/scraper"
 	"github.com/anhthii/go-echo/utils"
 	"github.com/gin-gonic/gin"
 )

@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/anhthii/go-echo/db/models"
@@ -45,7 +44,6 @@ func TokenAuthMiddleware() gin.HandlerFunc {
 
 // IsValidUser check if a user really owns this token
 func IsValidUser(c *gin.Context) {
-	fmt.Println("vai ca loz")
 	userNameFromToken := c.MustGet("user")
 	username := c.Param("username")
 	if userNameFromToken != username {

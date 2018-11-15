@@ -13,11 +13,18 @@ import (
 )
 
 func main() {
-	router := gin.Default()
+	// Init database
 	db.Init()
-	db.GetDB().AutoMigrate(&models.User{}, &models.Playlist{}, &models.Song{}, &models.Artist{})
+	db.Tables(&models.User{}, &models.Playlist{}, &models.Song{}, &models.Artist{})
 	defer db.Close()
 
+	router := SetupRouter()
+	router.Run(":3000")
+}
+
+// SetupRouter registers routes
+func SetupRouter() *gin.Engine {
+	router := gin.Default()
 	api := router.Group("/api")
 	{
 		mediaRoutes := api.Group("/media")
@@ -61,10 +68,7 @@ func main() {
 			// delete a song from a playlist
 			// playlistRoutes.DELETE("/:username/:playlistTitle/:songId", deleteSongFromPlaylist)
 		}
-
 	}
-
 	// router.GET("/download/song/:songTitle/:id", handlers.DownloadSong)
-
-	router.Run(":3000")
+	return router
 }

@@ -37,7 +37,7 @@ func Tables(tables ...interface{}) {
 	if _db == nil {
 		log.Panic("you have to Init database first")
 	}
-	_db.AutoMigrate(tables)
+	_db.AutoMigrate(tables...)
 }
 
 func Close() func() error {
