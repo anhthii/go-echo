@@ -31,10 +31,6 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/gin-contrib/static"
-
-[[constraint]]
-  branch = "master"
   name = "github.com/gin-gonic/gin"
 
 [[constraint]]
