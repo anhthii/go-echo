@@ -11,8 +11,15 @@ import (
 
 var _db *gorm.DB
 
-func Init() {
-	err := godotenv.Load()
+// Init initialize postgres database instance
+func Init(dotenvPath ...string) {
+	var err error
+	if len(dotenvPath) == 1 {
+		err = godotenv.Load(dotenvPath[0])
+	} else {
+		err = godotenv.Load()
+	}
+
 	if err != nil {
 		log.Panic("Error loading .env file")
 	}
@@ -27,7 +34,7 @@ func Init() {
 
 	conn, err := gorm.Open("postgres", dbURI)
 	if err != nil {
-		log.Panic("Failed to connect to database")
+		log.Panic(err.Error())
 	}
 
 	_db = conn

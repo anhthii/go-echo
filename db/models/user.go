@@ -34,6 +34,16 @@ func ValidateUsername(username string) (httpStatusCode int, errorResponse map[st
 	return 400, errors{"username": fmt.Sprintf("%s username already in use by another user", user.Username)}
 }
 
+func GenerateTokenForUser(username string) string {
+	tk := &Token{Username: username}
+	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
+	tokenString, err := token.SignedString([]byte(os.Getenv("TOKEN_SECRET")))
+	if err != nil {
+		panic("Error occured when generating token")
+	}
+	return tokenString
+}
+
 func CreateNewUser(username, password string) (httpStatusCode int, errorResponse map[string]string, dataResponse map[string]string) {
 	user := &User{}
 	user.Username = username
@@ -44,11 +54,8 @@ func CreateNewUser(username, password string) (httpStatusCode int, errorResponse
 	db.GetDB().Create(user)
 
 	// create new JWT token for the newly registered account
-	tk := &Token{Username: user.Username}
-	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
-	tokenString, _ := token.SignedString([]byte(os.Getenv("TOKEN_SECRET")))
 
-	user.Access_token = tokenString
+	user.Access_token = GenerateTokenForUser(username)
 	db.GetDB().Save(&user)
 	dataResponse = make(map[string]string)
 	dataResponse["username"] = user.Username
